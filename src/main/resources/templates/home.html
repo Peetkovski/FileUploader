@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&family=Zen+Kaku+Gothic+Antique&display=swap" rel="stylesheet">
     <style>
         body{
-            background-color: grey;
+            color: wheat;
+            background-color: #151617;
             font-family: 'Roboto', 'sans-serif';
             font-family: 'Zen Kaku Gothic Antique', sans-serif;
             font-size: 120%;
@@ -19,20 +20,61 @@
             width: 100%;
             margin: auto;
         }
+
+        #video{
+            margin-top: 100px;
+            margin-left: 400px;
+            width: 1100px;
+            height: 600px;
+            position: absolute;
+            background-color: #151617;
+            visibility: hidden;
+        }
+        #player{
+            opacity: 100%;
+            width: 100%;
+            margin: auto;
+        }
     </style>
+
+
+    <script type="text/javascript">
+
+
+        function showBar(){
+            document.getElementById('video').style.visibility="visible";
+
+            document.getElementById('player').play();
+            document.getElementById('player').volume=0.2;
+            document.getElementById('upload').style.opacity='0.2'
+
+        }
+
+        function hideBar(){
+
+            document.getElementById('video').style.visibility="hidden"
+            document.getElementById('files').style.opacity='1'
+            document.getElementById('player').pause();
+            document.getElementById('player').currentTime = 0;
+            document.getElementById('upload').style.opacity='1'
+
+        }
+
+    </script>
+
 </head>
 <body>
 
-<div>
-    <h3>Upload Many Files</h3>
+<div id="upload">
+    <h3>Siegewagon</h3>
     <form id="uploadFile" name="uploadFile" method="post" th:action="@{/uploadFile}" enctype="multipart/form-data">
         <input type="file" name="files"/>
-        <button type="submit">Submit</button>
+        <button class="button--primary" type="submit">Submit</button>
     </form>
 </div>
 
 
-<div>
+<div id="files">
     <h3>Documents</h3>
     <table>
         <thead>
@@ -40,20 +82,33 @@
             <th>ID</th>
             <th>Name</th>
             <th>Download </th>
-            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
+
         <tr th:each="doc:${docs}">
             <td th:text="${doc.id}"></td>
             <td th:text="${doc.docName}"></td>
-            <td><a th:href="@{'/downloadFile/'+${doc.id}}"> Zobacz </a></td>
+            <td><a th:href="@{'/downloadFile/'+${doc.id}}" onmouseover="showBar()" onmouseout="hideBar()"> Zobacz </a></td>
+
+            <div id="video" >
+                <video id="player" height="600" width="600" controls=""  name="media">
+                    <source th:src="@{'http://localhost:8080/downloadFile/'+${doc.id}}" type="video/mp4">
+                </video>
+
+            </div>
         </tr>
         </tbody>
+
 
     </table>
 
 </div>
+
+
+
+
+
 
 </body>
 </html>
